@@ -1,0 +1,346 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE rfc [
+  <!ENTITY nbsp    "&#160;">
+  <!ENTITY zwsp   "&#8203;">
+  <!ENTITY nbhy   "&#8209;">
+  <!ENTITY wj     "&#8288;">
+]>
+<!-- This template is for creating an Internet Draft using xml2rfc,
+     which is available here: http://xml.resource.org. -->
+<!-- used by XSLT processors -->
+<!-- For a complete list and description of processing instructions (PIs),
+     please see http://xml.resource.org/authoring/README.html. -->
+<!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
+     (Here they are set differently than their defaults in xml2rfc v1.32) -->
+<?rfc strict="yes" ?>
+<!-- give errors regarding ID-nits and DTD validation -->
+<!-- control the table of contents (ToC) -->
+<?rfc toc="yes"?>
+<?rfc tocappendix="yes"?>
+<!-- generate a ToC -->
+<?rfc tocdepth="3"?>
+<!-- the number of levels of subsections in ToC. default: 3 -->
+<!-- control references -->
+<?rfc symrefs="yes"?>
+<!-- use symbolic references tags, i.e, [RFC2119] instead of [1] -->
+<?rfc sortrefs="yes" ?>
+<!-- sort the reference entries alphabetically -->
+<!-- control vertical white space
+     (using these PIs as follows is recommended by the RFC Editor) -->
+<?rfc compact="yes" ?>
+<!-- do not start each main section on a new page -->
+<?rfc subcompact="no" ?>
+<!-- keep one blank line between list items -->
+<!-- end of list of popular I-D processing instructions -->
+<?rfc comments="no" ?>
+<?rfc inline="yes" ?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="exp" docName="draft-muks-dns-nta-feed-zones-00" ipr="trust200902" submissionType="IETF" tocInclude="true" tocDepth="3" symRefs="true" sortRefs="true" version="3">
+  <!-- xml2rfc v2v3 conversion 3.31.0 -->
+  <front>
+    <title>DNS NTA feed zones</title>
+    <seriesInfo name="Internet-Draft" value="draft-muks-dns-nta-feed-zones-00"/>
+    <author fullname="Mukund Sivaraman" initials="M." surname="Sivaraman">
+      <organization>Banu Systems Private Limited</organization>
+      <address>
+        <postal>
+          <street>6001 Beach Road, #19-09, Golden Mile Tower</street>
+          <code>199589</code>
+          <country>SG</country>
+        </postal>
+        <email>muks@banu.com</email>
+        <uri>https://banu.com/</uri>
+      </address>
+    </author>
+    <date/>
+    <!-- Meta-data Declarations -->
+
+    <area>Operations and Management Area</area>
+    <workgroup>Internet Engineering Task Force</workgroup>
+    <!-- <keyword>dns</keyword> -->
+
+    <abstract>
+
+      <t>This memo documents a method for expressing DNS negative trust
+      anchors <xref target="RFC7646"/> inside a specially constructed
+      DNS zone, that validating recursive name servers and other DNSSEC
+      validators may download and use.</t>
+
+    </abstract>
+
+  </front>
+  <middle>
+
+    <section anchor="sec_intro">
+
+      <name>Introduction</name>
+
+      <t>As DNSSEC deployment increases, there are more incidents where
+      a domain is unavailable due to DNSSEC validator related issues
+      such as those described in Section <xref target="RFC7646"
+      section="1" sectionFormat="bare">Introduction and
+      Motivation</xref> of <xref target="RFC7646" />. The concept of
+      Negative Trust Anchors (NTA) <xref target="RFC7646" /> was
+      introduced to temporarily workaround such DNSSEC validation
+      issues.</t>
+
+      <t>Use of NTAs currently require operators to follow a range of
+      requirements which many DNS validating resolver operators are
+      poorly equipped to follow. There are many DNS resolver operators
+      who run commercial off-the-shelf resolver implementations, e.g.,
+      in the form of network appliances, but do not have the ability to
+      generate, manage, and regularly evaluate NTAs on their own. Many
+      DNS resolver operators typically depend on their software vendors
+      to manage many aspects of DNS operation for them
+      automatically.</t>
+
+      <t>As an analogous example, many DNS resolver operators also do
+      not have expertise to generate and manage DNS firewalling and
+      filtering information on their own, so they make use of Response
+      Policy Zones <xref target="I-D.vixie-dnsop-dns-rpz" /> to provide
+      this information for their resolvers. The responsibility of
+      generating the information in RPZ is delgated to one or more
+      trusted 3rd-parties.</t>
+
+      <t>This draft obsoletes the text "Use of an NTA MUST NOT be
+      automatic." in Section <xref target="RFC7646" section="2.1"
+      sectionFormat="bare">Applicability of Negative Trust
+      Anchors</xref> of <xref target="RFC7646" />. The production of NTA
+      feed zones as described in <xref target="sec_producers" /> still
+      requires human involvement and is not automatic, but the
+      consumption of NTA feed zones at validating resolvers as described
+      in <xref target="sec_consumers" /> is expected to be fully
+      automatic.</t>
+
+    </section>
+
+    <section>
+
+      <name>Requirements notation</name>
+
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
+      "MAY", and "OPTIONAL" in this document are to be interpreted as
+      described in <xref target="RFC2119"/> <xref target="RFC8174"/>
+      when, and only when, they appear in all capitals, as shown
+      here.</t>
+
+    </section>
+
+    <section anchor="sec_nta_rrtype">
+
+      <name>NTA RR type</name>
+
+      <t>An NTA RRset encodes a single negative trust anchor's
+      configuration in its RDATA. It is a singleton, i.e., only a single
+      RR of the type may exist in an NTA RRset. The wire format of NTA
+      RDATA is as follows:</t>
+      
+      <table>
+        <thead>
+          <tr>
+            <td>RDATA field</td>
+            <td>Type</td>
+            <td>Field size</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>DOMAIN</td>
+            <td>DNS name (uncompressed)</td>
+            <td>Variable</td>
+          </tr>
+          <tr>
+            <td>EXPIRY</td>
+            <td>unsigned integer</td>
+            <td>64 bits (8 octets)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <t>The DOMAIN field encodes the domain name of the negative trust
+      anchor. It MUST be an uncompressed DNS name in <xref
+      target="RFC1035"/> wire format.</t>
+
+      <t>The EXPIRY field encodes the expiry time of the negative trust
+      anchor in seconds since the Epoch, 1970-01-01 00:00:00 +0000
+      (UTC). It is a 64-bit unsigned integer encoded in network byte
+      order. The expiry time SHOULD NOT exceed 1 week from the current
+      time per Section <xref target="RFC7646" section="4"
+      sectionFormat="bare">Removal of a Negative Trust Anchor</xref> of
+      <xref target="RFC7646" />.</t>
+      
+      <t>The owner name of an NTA RRset also encodes the domain name of
+      the NTA relative to the NTA feed zone's origin as a matter of
+      convenience for implementations to make use of. This is so that
+      negative trust anchors may be queried as part of a zone's existing
+      domain name tree structure.</t>
+
+    </section>
+
+    <section anchor="sec_nta_feed_zone">
+
+      <name>NTA feed zone</name>
+
+      <t>TBD.</t>
+
+    </section>
+
+    <section anchor="sec_producers">
+
+      <name>Producer requirements</name>
+
+      <t>This section documents the requirements of a NTA feed zone's
+      producer. It is limited to the content of NTA feed zones and
+      does not specify how the zone is transferred to consumers.</t>
+
+      <t>TBD.</t>
+
+    </section>
+
+    <section anchor="sec_consumers">
+
+      <name>Consumer requirements</name>
+
+      <t>This section documents the requirements of a NTA feed zone's
+      consumer.</t>
+
+      <t>TBD.</t>
+
+      <t>Zero or more NTA feed zones may be configured at a validating
+      recursive name server or DNSSEC validator. If NTAs with identical
+      domain occur among multiple NTA feed zones, it is RECOMMENDED that
+      the first corresponding NTA in configured order be used and the
+      remaining occurences be discarded.</t>
+
+      <t>The requirements in <xref
+      target="sec_security_considerations"/> also form a part of these
+      consumer requirements.</t>
+
+    </section>
+
+    <section>
+
+      <name>Example NTA feed zone</name>
+
+      <t>The following is a sample NTA feed zone. It is meant to
+      configure a single NTA for the domain <tt>example.com.</tt> with
+      expiry time at Mon 13 Jul 19:46:48 2026 UTC. Note that in within
+      the zone, the NTA RR has the owner name
+      <tt>example.com.nta1.example.net.</tt> as the name is specified
+      relative to the zone's origin.</t>
+
+      <sourcecode>
+$ORIGIN nta1.example.net.
+$TTL 1H
+@                   SOA localhost. nta-maintainer.example.net. (
+                                        1 1h 15m 30d 2h)
+                    NS localhost.
+
+example.com         NTA example.com. 1783972008
+      </sourcecode>
+
+    </section>
+
+    <section anchor="sec_security_considerations">
+
+      <name>Security considerations</name>
+
+      <t>The security considerations in Section <xref target="RFC7646"
+      section="8" sectionFormat="bare">Security Considerations</xref> of
+      <xref target="RFC7646" /> apply.</t>
+
+      <t>It is strongly RECOMMENDED that NTA feed zone consumers
+      regularly establish whether the party producing the NTA feed zones
+      can be trusted for their NTA feed zones' content. This has at
+      least three aspects of consideration: whether the NTA
+      configuration in the feed zones is correct and accurate, whether
+      it is maintained to be current by the producer of the NTA feed
+      zone to match current network conditions, and whether access to
+      the NTA feed zone is operationally available without disruption.
+      An example relationship may be that the producer is the consumer's
+      DNS resolver vendor and the consumer has a legal agreement with
+      that vendor and trusts that vendor.</t>
+
+      <t>It is strongly RECOMMENDED that DNS zone transfer initiators
+      (clients) of NTA feed zone consumers verify the authenticity and
+      integrity of the NTA feed zone data using a mechanism such as TSIG
+      <xref target="RFC8945"/>.</t>
+
+      <t>Section <xref target="RFC7646" section="4"
+      sectionFormat="bare">Removal of a Negative Trust Anchor</xref> of
+      <xref target="RFC7646" /> recommends that the lifetime of any NTA
+      SHOULD NOT exceed a week. When NTAs are received via NTA feed
+      zones, the DNSSEC validator must ensure that any NTAs whose expiry
+      time is more than 1 week from the current time are either clamped
+      to 1 week from the current time or discarded.</t>
+
+      <t>If the NTA feed zone contents become stale or expire due to any
+      reason, all the configured NTAs derived from that feed zone MUST
+      be unconfigured and removed as soon as the condition is
+      detected.</t>
+
+      <t>If any NTAs that existed in a previous version of the NTA feed
+      zone have been deleted in a new version of the zone, such NTAs
+      must be unconfigured and removed immediately after the new zone's
+      contents are received by the consumer.</t>
+
+    </section>
+
+    <section anchor="sec_iana">
+
+      <name>IANA considerations</name>
+
+      <t>IANA is requested to allocate the following RR types in the
+      "Resource Record (RR) TYPEs" registry in the "Domain Name System
+      (DNS) Parameters" registry group.</t>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Meaning</th>
+            <th>Reference</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>NTA</td>
+            <td>TBD</td>
+            <td>a negative trust anchor</td>
+            <td>See <xref target="sec_nta_rrtype"/>.</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+
+    <section anchor="sec_acknowledgements">
+
+      <name>Acknowledgements</name>
+
+      <t>The idea of transferring NTAs to validators by representing
+      them as transferrable DNS zones is based on Response Policy Zones
+      <xref target="I-D.vixie-dnsop-dns-rpz" />.</t>
+
+    </section>
+
+  </middle>
+  <back>
+    <references>
+      <name>References</name>
+      <references>
+        <name>Normative references</name>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.1035.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7646.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8945.xml"/>
+      </references>
+      <references>
+        <name>Informative references</name>
+        <xi:include href="https://datatracker.ietf.org/doc/bibxml3/draft-vixie-dnsop-dns-rpz-00.xml"/>
+      </references>
+    </references>
+  </back>
+</rfc>

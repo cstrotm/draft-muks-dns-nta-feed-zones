@@ -186,7 +186,12 @@
       the NTA relative to the NTA feed zone's origin as a matter of
       convenience for implementations to make use of. This is so that
       negative trust anchors may be queried as part of a zone's existing
-      domain name tree structure.</t>
+      domain name tree structure. As a result, the maximum length and
+      number of labels of an NTA's domain name represented in the owner
+      name of an RRset within an NTA feed zone as a sub-domain of the
+      zone's origin may be lower than the maximum limits permitted for
+      DNS names by <xref target="RFC1035"/>. This is considered
+      negligible.</t>
 
       <t>TBD.</t>
 
@@ -212,6 +217,9 @@
       consumer.</t>
 
       <t>TBD.</t>
+
+      <t>RRsets other than that of RR type NTA in the NTA feed zone MUST
+      be ignored by the consumer.</t>
 
       <t>Zero or more NTA feed zones may be configured at a validating
       recursive name server or DNSSEC validator. If NTAs with identical

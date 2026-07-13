@@ -101,8 +101,14 @@
       generating the information in RPZ is delgated to one or more
       trusted 3rd-parties.</t>
 
-      <t>This draft obsoletes the text "Use of an NTA MUST NOT be
-      automatic." in Section <xref target="RFC7646" section="2.1"
+      <t>This draft introduces NTA feed zones, which are specially
+      formatted DNS zones that communicate lists of NTAs from their
+      producers to their consumers.</t>
+
+      <t>Consumer software such as validating resolvers and other DNSSEC
+      validators may configure NTAs from NTA feed zones
+      automatically. This draft obsoletes the text "Use of an NTA MUST
+      NOT be automatic." in Section <xref target="RFC7646" section="2.1"
       sectionFormat="bare">Applicability of Negative Trust
       Anchors</xref> of <xref target="RFC7646" />. The production of NTA
       feed zones as described in <xref target="sec_producers" /> still

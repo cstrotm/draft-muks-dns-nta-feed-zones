@@ -184,6 +184,16 @@
       sectionFormat="bare">Removal of a Negative Trust Anchor</xref> of
       <xref target="RFC7646" />.</t>
 
+      <t>The EXPIRY time is merely an advisory indication by the NTA
+      feed zone producer of how long the NTA is expected to be valid
+      for. Additions and deletions to the list of NTAs in the NTA feed
+      zone and the freshness of the zone data direct the additions and
+      deletions of configured NTAs in the NTA feed zone consumer. An NTA
+      may be deleted from an NTA feed zone well before its specified
+      EXPIRY time. The EXPIRY time of an NTA may also be extended in
+      future versions of the NTA feed zone. An NTA may be re-added soon
+      after its deletion from an NTA feed zone.</t>
+
       <t>The presentation format of the NTA RDATA consists of the DOMAIN
       field in <xref target="RFC1035"/> DNS name presentation format,
       followed by the EXPIRY field in decimal representation without any

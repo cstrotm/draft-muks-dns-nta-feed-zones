@@ -130,9 +130,9 @@
       in <xref target="sec_consumers" /> is expected to be fully
       automatic.</t>
 
-      <t>NTA feed zones provides managed NTAs for those operators who
-      are incapable of applying and maintaining NTAs on their own, so
-      that they make use of negative trust anchors which they may be
+      <t>NTA feed zones provide managed NTAs for those operators who are
+      incapable of applying and maintaining NTAs on their own, so that
+      they may make use of negative trust anchors which they may be
       unable to use otherwise. The use of NTA feed zones is
       OPTIONAL. Operators who wish to make use of them may do so, and
       those who wish to manage NTAs on their own do not have to use NTA

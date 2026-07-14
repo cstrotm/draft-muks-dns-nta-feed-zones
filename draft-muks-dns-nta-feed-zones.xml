@@ -299,17 +299,17 @@ example.com         NTA example.com. 1783972008
       section="8" sectionFormat="bare">Security Considerations</xref> of
       <xref target="RFC7646" /> apply.</t>
 
-      <t>It is strongly RECOMMENDED that NTA feed zone consumers
-      regularly establish whether the party producing the NTA feed zones
-      can be trusted for their NTA feed zones' content. This has at
-      least three aspects of consideration: whether the NTA
-      configuration in the feed zones is correct and accurate, whether
-      it is maintained to be current by the producer of the NTA feed
-      zone to match current network conditions, and whether access to
-      the NTA feed zone is operationally available without disruption.
-      An example relationship may be that the producer is the consumer's
-      DNS resolver vendor and the consumer has a legal agreement with
-      that vendor and trusts that vendor.</t>
+      <t>It is strongly RECOMMENDED that NTA feed zone consumer
+      operators regularly establish whether the party producing the NTA
+      feed zones can be trusted and relied on for their NTA feed zones'
+      content. This has at least three aspects of consideration: whether
+      the NTA configuration in the feed zones is correct and accurate,
+      whether it is regularly maintained to be current by the producer
+      of the NTA feed zone to match current network conditions, and
+      whether access to the NTA feed zone is operationally available
+      without disruption. An example relationship may be that the
+      producer is the consumer's DNS resolver vendor and the consumer
+      has a legal agreement with that vendor and trusts that vendor.</t>
 
       <t>It is strongly RECOMMENDED that DNS zone transfer initiators
       (clients) of NTA feed zone consumers verify the authenticity and

@@ -51,6 +51,18 @@
         <uri>https://banu.com/</uri>
       </address>
     </author>
+    <author fullname="Carsten Strotmann" initials="C." surname="Strotmann">
+      <organization>Tidelock</organization>
+      <address>
+        <postal>
+          <street>In den Kaempen 28, Neuenkirchen</street>
+          <code>48485</code>
+          <country>DE</country>
+        </postal>
+        <email>ietf@strotmann.de</email>
+        <uri>https://dnsworkshop.org/</uri>
+      </address>
+    </author>
     <date/>
     <!-- Meta-data Declarations -->
 
@@ -149,7 +161,7 @@
       configuration in its RDATA. It is a singleton, i.e., only a single
       RR of the type may exist in an NTA RRset. The wire format of NTA
       RDATA is as follows:</t>
-      
+
       <table>
         <thead>
           <tr>
@@ -344,7 +356,7 @@ example.com         NTA example.com. 1783972008
       <t>IANA is requested to allocate the following RR types in the
       "Resource Record (RR) TYPEs" registry in the "Domain Name System
       (DNS) Parameters" registry group.</t>
-      
+
       <table>
         <thead>
           <tr>

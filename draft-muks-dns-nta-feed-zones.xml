@@ -184,9 +184,13 @@
       sectionFormat="bare">Removal of a Negative Trust Anchor</xref> of
       <xref target="RFC7646" />.</t>
 
-      <t>The EXPIRY time is merely an advisory indication by the NTA
-      feed zone producer of how long the NTA is expected to be valid
-      for. Additions and deletions to the list of NTAs in the NTA feed
+      <t>The EXPIRY time is an advisory indication by the NTA feed zone
+      producer of how long the NTA is expected to be valid for. After an
+      NTA's EXPIRY time, unless its corresponding NTA feed zone was
+      updated with new content, the NTA MUST be unconfigured and
+      removed.</t>
+
+      <t>Additions and deletions to the list of NTAs in the NTA feed
       zone and the freshness of the zone data direct the additions and
       deletions of configured NTAs in the NTA feed zone consumer. An NTA
       may be deleted from an NTA feed zone well before its specified
@@ -206,6 +210,11 @@
     <section anchor="sec_nta_feed_zone">
 
       <name>NTA feed zone</name>
+
+      <t>NTA feed zones encode a list of negative trust anchors within a
+      DNS zone using the NTA RR type. If the reader would like to view
+      an example first, it may be found in <xref target="sec_example"
+      />.
 
       <t>The owner name of an NTA RRset also encodes the domain name of
       the NTA relative to the NTA feed zone's origin as a matter of
@@ -322,7 +331,8 @@ example.com         NTA example.com. 1783972008
       SHOULD NOT exceed a week. When NTAs are received via NTA feed
       zones, the DNSSEC validator must ensure that any NTAs whose expiry
       time is more than 1 week from the current time are either clamped
-      to 1 week from the current time or discarded.</t>
+      to 1 week from the current time or discarded. NTAs whose EXPIRY
+      time has already passed MUST NOT be used.</t>
 
     </section>
 
